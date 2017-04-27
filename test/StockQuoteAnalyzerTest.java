@@ -1,3 +1,4 @@
+import exceptions.InvalidAnalysisState;
 import exceptions.InvalidStockSymbolException;
 import exceptions.StockTickerConnectionError;
 import org.mockito.Mock;
@@ -92,10 +93,99 @@ public class StockQuoteAnalyzerTest {
     }
 
     @Test
+    public void playAppropriateAudioShouldDoNothingWhenPercentChangeIsZero() throws Exception {
+        String validSymbol = "ZUMZ";
+        analyzer = new StockQuoteAnalyzer(validSymbol, generatorMock, audioMock);
+
+        StockQuote mockQuote = new StockQuote("A", 1, 1, 0);
+        when(generatorMock.getCurrentQuote()).thenReturn(mockQuote);
+
+        analyzer.refresh();
+        analyzer.playAppropriateAudio();
+
+        verify(audioMock, times(0)).playSadMusic();
+        verify(audioMock, times(0)).playHappyMusic();
+        verify(audioMock, times(0)).playErrorMusic();
+    }
+
+    @Test
+    public void playAppropriateAudioShouldDoNothingWhenPercentChangeIsLessThanOne() throws Exception {
+        String validSymbol = "ZUMZ";
+        analyzer = new StockQuoteAnalyzer(validSymbol, generatorMock, audioMock);
+
+        StockQuote mockQuote = new StockQuote("A", (1/99), 1, 0.00001);
+        when(generatorMock.getCurrentQuote()).thenReturn(mockQuote);
+
+        analyzer.refresh();
+        analyzer.playAppropriateAudio();
+
+        verify(audioMock, times(0)).playSadMusic();
+        verify(audioMock, times(0)).playHappyMusic();
+        verify(audioMock, times(0)).playErrorMusic();
+    }
+
+    @Test
+    public void playAppropriateAudioShouldDoNothingWhenPercentChangeIsOne() throws Exception {
+        String validSymbol = "ZUMZ";
+        analyzer = new StockQuoteAnalyzer(validSymbol, generatorMock, audioMock);
+
+        StockQuote mockQuote = new StockQuote("A", (1/100), 1, 0.00001);
+        when(generatorMock.getCurrentQuote()).thenReturn(mockQuote);
+
+        analyzer.refresh();
+        analyzer.playAppropriateAudio();
+
+        verify(audioMock, times(0)).playSadMusic();
+        verify(audioMock, times(0)).playHappyMusic();
+        verify(audioMock, times(0)).playErrorMusic();
+    }
+
+    @Test
+    public void playAppropriateAudioShouldPlaySadMusicWhenPercentChangeIsNegOne() throws Exception {
+        String validSymbol = "ZUMZ";
+        analyzer = new StockQuoteAnalyzer(validSymbol, generatorMock, audioMock);
+
+        StockQuote mockQuote = new StockQuote("A", (1/100), 1, -0.00001);
+        when(generatorMock.getCurrentQuote()).thenReturn(mockQuote);
+
+        analyzer.refresh();
+        analyzer.playAppropriateAudio();
+
+        verify(audioMock, times(1)).playSadMusic();
+    }
+
+    @Test
     public void getSymbolShouldReturnSymbolWhenCalled() throws Exception {
         String testSymbol = "ZUMZ";
         analyzer = new StockQuoteAnalyzer(testSymbol, generatorMock, audioMock);
 
         assertEquals(testSymbol, analyzer.getSymbol());
+    }
+
+    @Test
+    public void getPreviousCloseShouldReturnPreviousCloseWhenValid() throws Exception {
+        String validSymbol = "ZUMZ";
+        analyzer = new StockQuoteAnalyzer(validSymbol, generatorMock, audioMock);
+
+        StockQuote mockQuote = new StockQuote("A", 1, 1, -1);
+        when(generatorMock.getCurrentQuote()).thenReturn(mockQuote);
+
+        analyzer.refresh();
+        analyzer.refresh();
+
+        analyzer.getPreviousClose();
+
+        verify(mockQuote, times(1)).getClose();
+    }
+
+    @Test (expectedExceptions = InvalidAnalysisState.class)
+    public void getPreviousCloseShouldThrowExceptionWhenInvalid() throws Exception {
+        String validSymbol = "ZUMZ";
+        analyzer = new StockQuoteAnalyzer(validSymbol, generatorMock, audioMock);
+
+        StockQuote mockQuote = new StockQuote("A", 1, 1, -1);
+        when(generatorMock.getCurrentQuote()).thenReturn(mockQuote);
+
+        analyzer.getPreviousClose();
     }
 }
