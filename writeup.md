@@ -7,9 +7,9 @@
 ## Bug Table
 Original Line Number | Fault Description | Fix Description 
 -------------------- | ----------------- | ---------------
-119 | Happy music played for all positive values instead of only above 1 | ... |
-151 | Throws exception unexpectedly | ... |
-154 | Gets the close of the current quote instead of the previous | ... |
+119 | Happy music played for all positive values instead of only above 1 | "this.getPercentChangeSinceClose() > 0" changed to "this.getPercentChangeSinceClose() > 1" |
+151 | Throws exception unexpectedly | "currentQuote != null" changed to "previousQuote == null" |
+154 | Gets the close of the current quote instead of the previous | "return currentQuote.getClose();" changed to "return previousQuote.getClose();" |
 l85 | getChangeSinceClose throws a null pointer exception instead of a InvalidStateException| Changed the exception thrown to an invalidStateException |
 187 | getChangeSinceClose returns an incorrect value | removed -currentQuote.getClose |
 204 | getPercentChangeSinceClose returns 10X the value its supposed to | changed *100000 to *10000 |
@@ -18,4 +18,4 @@ l85 | getChangeSinceClose throws a null pointer exception instead of a InvalidSt
 
 
 ## Final code coverage:
-![Code Coverage](Link here)
+![Code Coverage](http://imgur.com/a/lUVdU)

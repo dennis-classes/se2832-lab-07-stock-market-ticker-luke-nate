@@ -116,7 +116,7 @@ public class StockQuoteAnalyzer {
 	public void playAppropriateAudio() {
 		if (audioPlayer != null) {
 			try {
-				if ((this.getPercentChangeSinceClose() > 0)) {
+				if ((this.getPercentChangeSinceClose() > 1)) {
 					audioPlayer.playHappyMusic();
 				}
 				if ((this.getPercentChangeSinceClose() <= -1)) {
@@ -148,10 +148,10 @@ public class StockQuoteAnalyzer {
 	 */
 
 	public double getPreviousClose() throws InvalidAnalysisState {
-		if (currentQuote != null) {
+		if (previousQuote == null) {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
-		return currentQuote.getClose();
+		return previousQuote.getClose();
 	}
 
 	/**

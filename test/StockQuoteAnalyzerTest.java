@@ -231,7 +231,7 @@ public class StockQuoteAnalyzerTest {
         String validSymbol = "ZUMZ";
         analyzer = new StockQuoteAnalyzer(validSymbol, generatorMock, audioMock);
 
-        StockQuote mockQuote = new StockQuote("A", (1/99), 1, 0.00001);
+        StockQuote mockQuote = new StockQuote("A", 1, 1, 0.0099);
         when(generatorMock.getCurrentQuote()).thenReturn(mockQuote);
 
         analyzer.refresh();
@@ -247,7 +247,7 @@ public class StockQuoteAnalyzerTest {
         String validSymbol = "ZUMZ";
         analyzer = new StockQuoteAnalyzer(validSymbol, generatorMock, audioMock);
 
-        StockQuote mockQuote = new StockQuote("A", (1/100), 1, 0.00001);
+        StockQuote mockQuote = new StockQuote("A", 1, 1, 0.01);
         when(generatorMock.getCurrentQuote()).thenReturn(mockQuote);
 
         analyzer.refresh();
@@ -291,9 +291,7 @@ public class StockQuoteAnalyzerTest {
         analyzer.refresh();
         analyzer.refresh();
 
-        analyzer.getPreviousClose();
-
-        verify(mockQuote, times(1)).getClose();
+        assertEquals(mockQuote.getClose(), analyzer.getPreviousClose());
     }
 
     @Test (expectedExceptions = InvalidAnalysisState.class)
