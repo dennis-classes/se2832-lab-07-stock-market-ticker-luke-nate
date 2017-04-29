@@ -116,7 +116,7 @@ public class StockQuoteAnalyzer {
 	public void playAppropriateAudio() {
 		if (audioPlayer != null) {
 			try {
-				if ((this.getPercentChangeSinceClose() > 0)) {
+				if ((this.getPercentChangeSinceClose() > 1)) {
 					audioPlayer.playHappyMusic();
 				}
 				if ((this.getPercentChangeSinceClose() <= -1)) {
@@ -148,10 +148,10 @@ public class StockQuoteAnalyzer {
 	 */
 
 	public double getPreviousClose() throws InvalidAnalysisState {
-		if (currentQuote != null) {
+		if (previousQuote == null) {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
-		return currentQuote.getClose();
+		return previousQuote.getClose();
 	}
 
 	/**
@@ -182,9 +182,9 @@ public class StockQuoteAnalyzer {
 	 */
 	public double getChangeSinceClose() throws InvalidAnalysisState {
 		if (currentQuote == null) {
-			throw new NullPointerException("No quote has ever been retrieved.");
+			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
-		return currentQuote.getChange()-currentQuote.getClose();
+		return currentQuote.getChange();
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class StockQuoteAnalyzer {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
 
-		return Math.round((100000 * this.currentQuote.getChange() / this.currentQuote.getClose())) / 100.0;
+		return Math.round((10000 * this.currentQuote.getChange() / this.currentQuote.getClose())) / 100.0;
 	}
 
 	/**
@@ -217,6 +217,9 @@ public class StockQuoteAnalyzer {
 	 *             data source.
 	 */
 	public double getChangeSinceLastCheck() throws InvalidAnalysisState {
-		return currentQuote.getLastTrade() - currentQuote.getLastTrade();
+		if (previousQuote == null){
+			throw new InvalidAnalysisState("The quote has not been updated");
+		}
+		return currentQuote.getLastTrade() - previousQuote.getLastTrade();
 	}
 }
