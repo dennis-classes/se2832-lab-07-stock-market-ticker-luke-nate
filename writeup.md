@@ -18,4 +18,4 @@ l85 | getChangeSinceClose throws a null pointer exception instead of a InvalidSt
 
 
 ## Final code coverage:
-![Code Coverage](http://imgur.com/a/lUVdU)
+![Code Coverage](https://i.imgur.com/Wn0GEAg.png)
